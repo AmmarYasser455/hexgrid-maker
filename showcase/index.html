@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>500 m hexagons over five Paris landmarks</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; }
+  header { padding: 8px 14px; }
+  h1 { font-size: 1.2rem; margin: 0 0 4px; }
+  p { margin: 0; font-size: .9rem; }
+  #map { height: calc(100vh - 100px); }
+</style>
+</head>
+<body>
+<header>
+  <h1>500 m hexagons over five Paris landmarks</h1>
+  <p>Flat-top hexagons of 500 m edge cover the convex hull of the Eiffel Tower, Arc de Triomphe, Louvre, Notre-Dame and Sacre-Coeur. Orange cells hold a landmark; click a cell for its properties.</p>
+  <p>Made with <a href="https://github.com/AmmarYasser455/hexgrid-maker">hexgrid-maker</a>. Landmark positions &copy; OpenStreetMap contributors (ODbL).</p>
+</header>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var map = L.map('map');
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+fetch('map.geojson').then(function (r) { return r.json(); }).then(function (data) {
+  var layer = L.geoJSON(data, {
+    style: function (f) {
+      var hit = f.properties.n_landmarks > 0;
+      return { color: '#3b6a8f', weight: 1, fillColor: hit ? '#e8833a' : '#dbe9f4', fillOpacity: hit ? 0.7 : 0.4 };
+    },
+    onEachFeature: function (f, l) {
+      var p = f.properties, rows = [];
+      for (var k in p) { rows.push('<b>' + k + '</b>: ' + p[k]); }
+      l.bindPopup(rows.join('<br>'));
+    }
+  }).addTo(map);
+  map.fitBounds(layer.getBounds());
+});
+</script>
+</body>
+</html>
