@@ -59,6 +59,12 @@ Each feature has `id`, `col`, `row` and `area_m2` (geodesic, WGS 84). Exterior r
 
 `examples/paris_landmarks.geojson` holds five real Paris landmarks, see [examples/README.md](examples/README.md). `docs/demo.geojson` is the tool's output for it and is checked by a test.
 
+## Showcase
+
+[![500 m hexagons over five Paris landmarks](showcase/map.png)](showcase/)
+
+500 m hexagons over five Paris landmarks: report in [showcase/](showcase/README.md), [web map](showcase/index.html), [notebook](showcase/showcase.ipynb). Rebuild with `python showcase/make_showcase.py`.
+
 ## Tests
 
 ```
