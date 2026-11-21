@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hexgrid-maker"
+version = "0.1.0"
+description = "Generate flat- or pointy-top hexagonal grids over a bounding box or polygon, in metres, as GeoJSON."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = ["pyproj>=3.4", "shapely>=2.0"]
+
+[project.optional-dependencies]
+test = ["pytest", "ruff"]
+
+[project.scripts]
+hexgrid-maker = "hexgrid_maker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
