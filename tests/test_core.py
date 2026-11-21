@@ -296,3 +296,32 @@ def test_cli_stdout_is_one_feature_collection(capsys):
     data = json.loads(out.out)
     assert data["type"] == "FeatureCollection" and data["features"]
     assert out.err == ""
+
+
+@pytest.mark.parametrize("orientation", ["flat", "pointy"])
+def test_cells_tile_without_overlap_and_neighbours_are_equidistant(orientation):
+    """Interior cells have six neighbours sqrt(3)*s (geodesic) away and do not overlap them."""
+    s = 200
+    grid = hex_grid((2.28, 48.84, 2.32, 48.87), s, orientation)  # central Paris, lon/lat
+    polys = [shape(f["geometry"]) for f in grid["features"]]
+    centres = [p.centroid for p in polys]
+    geod = Geod(ellps="WGS84")
+    step = math.sqrt(3) * s
+    interior = 0
+    for i, p in enumerate(polys):
+        # Vertices are projected independently, so shared edges only match to ~1e-10 degrees:
+        # find neighbours by centre distance rather than by intersection.
+        near = []
+        for j, c in enumerate(centres):
+            if j != i and geod.inv(centres[i].x, centres[i].y, c.x, c.y)[2] < 1.2 * step:
+                near.append(j)
+        if len(near) < 6:
+            continue  # edge of the grid
+        assert len(near) == 6
+        interior += 1
+        for j in near:
+            dist = geod.inv(centres[i].x, centres[i].y, centres[j].x, centres[j].y)[2]
+            assert dist == pytest.approx(step, rel=0.005)
+            overlap = geod.geometry_area_perimeter(p.intersection(polys[j]))[0]
+            assert abs(overlap) < 1.0  # m^2, against a cell of about 104,000 m^2
+    assert interior > 10
