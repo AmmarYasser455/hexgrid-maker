@@ -6,6 +6,7 @@ import argparse
 import json
 import sys
 
+from . import __version__
 from .core import MAX_CELLS, ORIENTATIONS, hex_grid, load_geometry
 
 
@@ -14,6 +15,7 @@ def build_parser():
         prog="hexgrid-maker",
         description="Hexagonal grid (GeoJSON, EPSG:4326, lon/lat order) over a bbox or polygon.",
     )
+    p.add_argument("--version", action="version", version=f"hexgrid-maker {__version__}")
     src = p.add_mutually_exclusive_group(required=True)
     src.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"),
                      help="bounding box in degrees")

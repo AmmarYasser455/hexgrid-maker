@@ -33,7 +33,7 @@ hexgrid-maker --input examples/paris_landmarks.geojson --size 500 -o docs/demo.g
 hexgrid-maker --bbox WEST SOUTH EAST NORTH --size 300 --orientation pointy --clip
 ```
 
-Options: `--bbox` or `--input FILE` (GeoJSON; polygons are used as they are, points and lines are replaced by their convex hull), `--size`, `--orientation flat|pointy`, `--clip` (cut edge cells to the polygon), `--max-cells`, `-o FILE` (default stdout). `python -m hexgrid_maker` works too.
+Options: `--bbox` or `--input FILE` (GeoJSON; polygons are used as they are, points and lines are replaced by their convex hull), `--size`, `--orientation flat|pointy`, `--clip` (cut edge cells to the polygon), `--max-cells`, `-o FILE` (default stdout), `--version`. `python -m hexgrid_maker` works too.
 
 ## Python
 

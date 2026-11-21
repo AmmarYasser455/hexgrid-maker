@@ -274,3 +274,25 @@ def test_non_wgs84_crs_rejected_at_every_level(data):
 def test_wgs84_crs_on_nested_geometry_accepted():
     gc = {"type": "GeometryCollection", "geometries": [dict(TRIANGLE, crs=_named("EPSG:4326"))]}
     assert hex_grid({"type": "Feature", "properties": {}, "geometry": gc}, 300) == hex_grid(TRIANGLE, 300)
+
+
+def test_cli_version_flag(capsys):
+    from hexgrid_maker import __version__
+    from hexgrid_maker.cli import main
+
+    with pytest.raises(SystemExit) as exc:
+        main(["--version"])
+    assert exc.value.code == 0
+    assert capsys.readouterr().out.strip() == f"hexgrid-maker {__version__}"
+
+
+def test_cli_stdout_is_one_feature_collection(capsys):
+    import json
+    from hexgrid_maker.cli import main
+
+    # Eiffel Tower area (lon, lat order)
+    assert main(["--bbox", "2.29", "48.85", "2.30", "48.86", "--size", "300"]) == 0
+    out = capsys.readouterr()
+    data = json.loads(out.out)
+    assert data["type"] == "FeatureCollection" and data["features"]
+    assert out.err == ""
