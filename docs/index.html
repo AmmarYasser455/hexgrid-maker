@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hexgrid-maker demo</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; }
+  header { padding: 8px 14px; }
+  h1 { font-size: 1.2rem; margin: 0 0 4px; }
+  p { margin: 0; font-size: .9rem; }
+  #map { height: calc(100vh - 80px); }
+</style>
+</head>
+<body>
+<header>
+  <h1>hexgrid-maker: 500 m hexagons over central Paris</h1>
+  <p>Flat-top grid covering the convex hull of five landmarks (Eiffel Tower, Arc de Triomphe, Louvre, Notre-Dame, Sacré-Cœur).
+  <a href="https://github.com/AmmarYasser455/hexgrid-maker">Source on GitHub</a></p>
+</header>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([48.868, 2.32], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  fetch('demo.geojson').then(r => r.json()).then(data => {
+    const layer = L.geoJSON(data, {style: {color: '#F2552C', weight: 1, fillOpacity: 0.15}}).addTo(map);
+    map.fitBounds(layer.getBounds());
+  });
+</script>
+</body>
+</html>
